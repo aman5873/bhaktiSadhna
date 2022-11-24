@@ -1,5 +1,49 @@
+:root {
+  --primary: #002876;
+  --primaryTwo: #e5e9f1;
+  --primaryThree: #3f256e;
+
+  --secondary: #92929d;
+  --secondaryTwo: #cecece;
+
+  --textColor-primary: #203154;
+  --textColor-primaryTwo: #2f1e4e;
+  --textColor-secondary: #404e6b;
+
+  --H1: 26;
+  --H2: 20;
+  --H3: 18;
+  --H4: 16;
+  --H5: 14;
+}
+@font-face {
+  font-family: "poppins-bold";
+  src: local("Poppins-Bold"), url("./Fonts/Poppins-Bold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "poppins-semibold";
+  src: local("Poppins-SemiBold"),
+    url("./Fonts/Poppins-SemiBold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "poppins-medium";
+  src: local("Poppins-Medium"),
+    url("./Fonts/Poppins-Medium.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "poppins-regular";
+  src: local("Poppins-Regular"),
+    url("./Fonts/Poppins-Regular.ttf") format("truetype");
+}
 .App {
-  text-align: center;
+  /* text-align: center; */
+  font-family: "Poppins", sans-serif;
+  color: black;
+}
+
+.body {
+  font-family: "Poppins", sans-serif;
 }
 
 .App-logo {
@@ -27,11 +71,112 @@
 .App-link {
   color: #61dafb;
 }
+.wordBreak {
+  word-break: break-word;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+
+  line-height: 22px;
+  max-height: 97px;
+  -webkit-line-clamp: 4;
+
+  margin: 0px;
+  padding: 5px;
+  font-size: 16px;
+  color: var(--textColor-secondary);
+  font-family: "poppins-regular";
+  white-space: pre-wrap;
+}
+
+.button-submit {
+  font-size: var(--H4);
+  font-family: "poppins-medium";
+  border-radius: 8px;
+  border: 1px solid var(--primary);
+  background-color: var(--primary);
+  width: 100%;
+  height: 43px;
+  margin: 5px;
+  color: white;
+  cursor: pointer;
+  text-align: center;
+}
+.button-fill {
+  font-size: var(--H4);
+  font-family: "poppins-medium";
+  border-radius: 8px;
+  border: 1px solid var(--primary);
+  background-color: var(--primary);
+  width: 180px;
+  height: 43px;
+  margin: 5px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  text-align: center;
+}
+.button-outline {
+  font-size: var(--H4);
+  font-family: "poppins-medium";
+  border-radius: 8px;
+  border: 1px solid var(--primary);
+  background-color: #ffffff;
+  width: 180px;
+  height: 43px;
+  margin: 5px;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.modalForm-group {
+  margin: 15px 0px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 155px auto;
+  margin-right: 10px;
+}
+.modalForm-label {
+  color: var(--secondary);
+  font-size: 16px;
+  margin-bottom: 5px;
+  font-family: "poppins-medium";
+}
+.modalForm-description {
+  resize: none;
+  overflow: hidden auto;
+}
+.full_description {
+  -webkit-line-clamp: unset;
+  font-family: "poppins-regular";
+  height: 100%;
+}
+
+/* ***************** scroll-hide */
+.hide-y-scroll {
+  height: 90vh;
+  overflow-y: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.hide-y-scroll::-webkit-scrollbar {
+  display: none;
+}
+.hide-x-scroll {
+  overflow-x: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.hide-x-scroll::-webkit-scrollbar {
+  display: none;
+}
 
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

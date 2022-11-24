@@ -1,0 +1,37 @@
+.form-row {
+  margin: 10px;
+}
+.login-formGroup-container {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr 1fr;
+}
+.flex-row-reverse {
+  flex-direction: row-reverse;
+}
+.login-formGroup {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+.login-formLabel {
+  /* width: 165px; */
+  padding-top: 5px;
+  margin-bottom: 5px;
+  font-family: "poppins-regular";
+  font-weight: 500;
+  font-size: 17px;
+  color: #2f1e4e;
+}
+.login-description {
+  resize: none;
+  overflow: hidden auto;
+}
+.password-hide-show-icon {
+  color: var(--primary);
+  position: absolute;
+  top: -30px;
+  right: 5px;
+  font-size: 25px;
+  cursor: pointer;
+}
