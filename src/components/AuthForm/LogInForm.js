@@ -4,12 +4,6 @@ import "bootstrap/dist/css/bootstrap.css";
 import Form from "react-bootstrap/Form";
 
 import Alert from "react-bootstrap/Alert";
-import {
-  BrowserView,
-  MobileView,
-  isBrowser,
-  isMobile,
-} from "react-device-detect";
 
 import { BiHide, BiShow } from "react-icons/bi";
 
@@ -19,7 +13,7 @@ import { COLORS } from "constants/theme";
 import FormButton from "components/AuthForm/AuthButton";
 import "components/AuthForm/css/authForm.css";
 
-import { sendOTP } from "components/AuthForm/auth_api/authFunctions";
+import { logIn } from "components/AuthForm/auth_api/authFunctions";
 
 const { innerWidth } = window;
 
@@ -39,16 +33,16 @@ function LogInForm(props) {
   const onSubmit = (e) => {
     e.preventDefault();
     if (formData.email.length > 0) {
-      sendOTP(formData.email, authRedirectUrl).then((res) => {
+      console.log("logIn-form submitted ", formData);
+      logIn(formData).then((res) => {
         if (res === undefined) {
           setEmailError("Not a registered user");
           return;
         }
-
         if (res.status) {
-          navigate(`${authRedirectUrl}auth/login`, {
+          console.log(res.message);
+          navigate(`${authRedirectUrl}`, {
             replace: true,
-            state: { email: formData.email },
           });
         } else {
           setEmailError(res.message);
@@ -106,12 +100,12 @@ function LogInForm(props) {
             />
             <div style={{ position: "relative" }}>
               {showPassWord ? (
-                <BiHide
+                <BiShow
                   className="password-hide-show-icon"
                   onClick={() => setShowPassword(!showPassWord)}
                 />
               ) : (
-                <BiShow
+                <BiHide
                   className="password-hide-show-icon"
                   onClick={() => setShowPassword(!showPassWord)}
                 />
@@ -126,7 +120,11 @@ function LogInForm(props) {
               cursor: "pointer",
               marginTop: 15,
             }}
-            onClick={() => {}}
+            onClick={() => {
+              navigate(`${authRedirectUrl}auth/forgotPassword`, {
+                replace: true,
+              });
+            }}
           >
             Forgotten Password ?
           </p>
@@ -137,7 +135,6 @@ function LogInForm(props) {
               color: COLORS.blue,
               cursor: "pointer",
             }}
-            onClick={() => {}}
           >
             Don't have an account ?{" "}
             <span
@@ -145,6 +142,11 @@ function LogInForm(props) {
                 fontSize: 18,
                 fontWeight: "bold",
                 color: COLORS.primary,
+              }}
+              onClick={() => {
+                navigate(`${authRedirectUrl}auth/register`, {
+                  replace: true,
+                });
               }}
             >
               Sign Up

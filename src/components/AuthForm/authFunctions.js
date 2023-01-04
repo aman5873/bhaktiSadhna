@@ -1,6 +1,6 @@
-import axios from "axios";
+// import axios from "axios";
 
-import * as config from "config";
+// import * as config from "config";
 
 // axios.interceptors.response.use(
 //   (response) => {
@@ -68,11 +68,11 @@ import * as config from "config";
 //   }
 // }
 
-export async function checkIsAuthenticated() {
-  const authToken = localStorage.getItem("token");
-  console.log("authToken ---", authToken);
-  return false;
-}
+// export async function checkIsAuthenticated() {
+//   const authToken = localStorage.getItem("token");
+//   console.log("authToken ---", authToken);
+//   return false;
+// }
 
 // export async function sendOTP(phoneNumber) {
 //   const api_url = `${config.host}/accounts/send_otp/${phoneNumber}/?a=true`;

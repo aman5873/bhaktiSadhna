@@ -1,3 +1,2 @@
-// export const host = "https://212a-182-69-179-60.ngrok.io";
-
-export const host = "https://bhaktisadhna.com";
+export const host = "http://localhost:8000";
+// export const host = "https://a98c-1-187-250-253.in.ngrok.io/";

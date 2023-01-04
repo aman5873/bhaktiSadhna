@@ -47,7 +47,7 @@ function AppRoute() {
   });
   useEffect(() => {
     onTokenChange();
-    window.addEventListener("tokenChange", onTokenChange);
+    // window.addEventListener("tokenChange", onTokenChange);
   }, []);
 
   return (

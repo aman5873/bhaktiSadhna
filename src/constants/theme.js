@@ -20,6 +20,7 @@ export const COLORS = {
   gray: "#92929D",
   grayTwo: "#00000054",
   green: "#00ff00",
+  greenTwo: "#1A4D2E",
   black: "#000000",
 };
 export const BACKGROUND = "#F6F6F6";

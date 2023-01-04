@@ -7,8 +7,13 @@ axios.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response.status === 401 || error.response.status === 403) {
+    if (
+      error.response.status === 401 ||
+      error.response.status === 403 ||
+      error.response.status === 400
+    ) {
       saveAuthorizationToken(null);
+      saveRefreshToken(null);
     }
     return error;
   }
@@ -21,7 +26,6 @@ export function setAuthorizationToken(token) {
     delete axios.defaults.headers.common["Authorization"];
   }
 }
-
 export function saveAuthorizationToken(token) {
   if (token) {
     localStorage.setItem("token", token);
@@ -29,29 +33,44 @@ export function saveAuthorizationToken(token) {
     localStorage.removeItem("token");
   }
   setAuthorizationToken(token);
-  window.dispatchEvent(new Event("tokenChange"));
+  // window.dispatchEvent(new Event("tokenChange"));
 }
-export async function checkPhoneNumber(phoneNumber) {
-  const api_url = `${config.host}/accounts/check_phone/${phoneNumber}/`;
-  return axios.get(api_url).then((res) => {
-    return res.data;
-  });
+
+export function setRefreshToken(token) {
+  if (token) {
+    axios.defaults.headers.common["Authorization"] = `token ${token}`;
+  } else {
+    delete axios.defaults.headers.common["Authorization"];
+  }
 }
+export function saveRefreshToken(refresh_token) {
+  if (refresh_token) {
+    localStorage.setItem("refresh_token", refresh_token);
+  } else {
+    localStorage.removeItem("refresh_token");
+  }
+  setRefreshToken(refresh_token);
+}
+
 export async function validateAuthToken(token) {
-  const api_url = `${config.host}/accounts/validate_token/${token}/`;
-  return axios.get(api_url).then((res) => {
-    return res.data;
-  });
+  const data = { refresh: token };
+  const api_url = `${config.host}/login/refresh/`;
+  // return axios.get(api_url).then((res) => {
+  //   return res.data;
+  // });
+  return { status: true };
 }
 export async function isValidAuthToken(authToken) {
   if (authToken) {
     return validateAuthToken(authToken).then((res) => {
       if (res.status) {
-        if (res.is_valid) {
-          setAuthorizationToken(authToken);
+        if (res.data.access_token && res.data.refresh_token) {
+          setAuthorizationToken(res.data.access_token);
+          setRefreshToken(res.data.refresh_token);
           return true;
         } else {
           saveAuthorizationToken(null);
+          setRefreshToken(null);
           return false;
         }
       }
@@ -61,27 +80,48 @@ export async function isValidAuthToken(authToken) {
   }
 }
 export async function checkIsAuthenticated() {
-  const authToken = localStorage.getItem("token");
+  const authToken = localStorage.getItem("refresh_token");
   return isValidAuthToken(authToken);
 }
 
-export async function sendOTP(phoneNumber, authRedirectUrl) {
-  let api_url =
-    authRedirectUrl && authRedirectUrl === "/admin/"
-      ? `${config.host}/accounts/send_otp/${phoneNumber}/?a=true`
-      : `${config.host}/accounts/send_otp/${phoneNumber}/`;
+// export async function sendOTP(phoneNumber, authRedirectUrl) {
+//   let api_url =
+//     authRedirectUrl && authRedirectUrl === "/admin/"
+//       ? `${config.host}/accounts/send_otp/${phoneNumber}/?a=true`
+//       : `${config.host}/accounts/send_otp/${phoneNumber}/`;
 
-  return axios.get(api_url).then((res) => {
+//   return axios.get(api_url).then((res) => {
+//     return res.data;
+//   });
+// }
+
+export async function sendRegistrationOtp(data) {
+  const api_url = `${config.host}/register/`;
+
+  console.log("send reg otp before sendRegistrationOtp ");
+  return axios.post(api_url, data).then((res) => {
+    console.log("send reg otp res ", res);
+    if (res.data.status) {
+      saveAuthorizationToken(res.data.token);
+    }
     return res.data;
   });
 }
-
-export async function logIn(phoneNumber, otp) {
-  const api_url = `${config.host}/accounts/login/`;
-  const data = {
-    phone: phoneNumber,
-    otp: otp,
-  };
+export async function validateRegistrationOtp(otp) {
+  const data = { otp: otp };
+  const api_url = `${config.host}/registration_otp/`;
+  return axios.post(api_url, data).then((res) => {
+    console.log("validate reg otp res ", res);
+    if (res.status) {
+      saveAuthorizationToken(res.data.access_token);
+      saveRefreshToken(res.data.refresh_token);
+    }
+    return res.data;
+  });
+}
+export async function sendForgotPasswordOtp(email) {
+  const data = { email: email };
+  const api_url = `${config.host}/forget_password/`;
   return axios.post(api_url, data).then((res) => {
     if (res.data.status) {
       saveAuthorizationToken(res.data.token);
@@ -89,13 +129,36 @@ export async function logIn(phoneNumber, otp) {
     return res.data;
   });
 }
+export async function validateForgotPasswordOtp(otp) {
+  const data = { otp: otp };
+  const api_url = `${config.host}/forget_password_otp/`;
+  return axios.post(api_url, data).then((res) => {
+    if (res.data.status) {
+      saveAuthorizationToken(res.data.access_token);
+      saveRefreshToken(res.data.refresh_token);
+    }
+    return res.data;
+  });
+}
+export async function logIn(data) {
+  const api_url = `${config.host}/login/`;
+
+  return axios.post(api_url, data).then((res) => {
+    console.log("login ", res);
+    if (res.data.status) {
+      saveAuthorizationToken(res.data.access_token);
+      saveRefreshToken(res.data.refresh_token);
+    }
+    return res.data;
+  });
+}
 
 export async function logOutFunc() {
-  const api_url = `${config.host}/accounts/logout/`;
+  const api_url = `${config.host}/logout/`;
   axios
     .get(api_url)
     .then((res) => {
-      saveAuthorizationToken(res.token);
+      saveAuthorizationToken(res.data.token);
     })
     .catch((error) => {
       console.warn(error);

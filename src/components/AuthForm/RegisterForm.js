@@ -1,61 +1,92 @@
 import React, { useState } from "react";
 
-import { useNavigate, useLocation } from "react-router-dom";
-
+import "bootstrap/dist/css/bootstrap.css";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 
-import {
-  BrowserView,
-  MobileView,
-  isBrowser,
-  isMobile,
-} from "react-device-detect";
+import { BiHide, BiShow } from "react-icons/bi";
 
+import { useNavigate, useLocation } from "react-router-dom";
+
+import { COLORS } from "constants/theme";
 import FormButton from "components/AuthForm/AuthButton";
 import "components/AuthForm/css/authForm.css";
-import { logIn, sendOTP } from "components/AuthForm/auth_api/authFunctions";
+import { sendRegistrationOtp } from "components/AuthForm/auth_api/authFunctions";
 
 const { innerWidth } = window;
 
+export function PasswordInput(props) {
+  const {
+    label = "Password",
+    password,
+    onChangePassword,
+    isShowPasswordIcon = null,
+  } = props;
+  const [showPassWord, setShowPassword] = useState(isShowPasswordIcon);
+  return (
+    <Form.Group className="login-formGroup">
+      <p className="login-formLabel">{label}</p>
+      <Form.Control
+        type={showPassWord ? "text" : "password"}
+        placeholder={"Enter password"}
+        value={password}
+        style={{
+          paddingRight: 30,
+        }}
+        onChange={onChangePassword}
+      />
+      {showPassWord !== null && (
+        <div style={{ position: "relative" }}>
+          {showPassWord ? (
+            <BiHide
+              className="password-hide-show-icon"
+              onClick={() => setShowPassword(!showPassWord)}
+            />
+          ) : (
+            <BiShow
+              className="password-hide-show-icon"
+              onClick={() => setShowPassword(!showPassWord)}
+            />
+          )}
+        </div>
+      )}
+    </Form.Group>
+  );
+}
 const RegisterForm = (props) => {
   const { authRedirectUrl } = props;
-  // const { state = {} } = useLocation();
-  // const { emailAddress } = state;
 
   const navigate = useNavigate();
-  const [otp, setOtp] = useState();
   const [otpError, setOtpError] = useState(false);
   const [message, setMessage] = useState();
 
   const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
     email: "",
     password: "",
+    password2: "",
   });
 
-  // const navigateToPhone = () => {
-  //   navigate(`${authRedirectUrl}auth/phone`, { replace: true });
-  // };
-  // const resendOTP = () => {
-  //   sendOTP(emailAddress, authRedirectUrl).then((res) => {
-  //     setMessage(res.message);
-  //     setOtpError(null);
-  //   });
-  // };
+  function onChangePassword(event) {
+    setFormData({ ...formData, password: event.target.value });
+  }
+  function onChangePassword2(event) {
+    setFormData({ ...formData, password2: event.target.value });
+  }
 
-  const onSubmit = () => {
-    // if (otp.length === 4) {
-    //   logIn(emailAddress, otp).then((res) => {
-    //     if (res.status) {
-    //       navigate(authRedirectUrl, { replace: true });
-    //     } else {
-    //       setOtpError(true);
-    //       setMessage(res.message);
-    //     }
-    //   });
-    // } else {
-    //   setOtpError(true);
-    // }
+  const onSubmit = (e) => {
+    e.preventDefault();
+    console.log("register-form submitted ", formData);
+    sendRegistrationOtp(formData).then((res) => {
+      console.log("after send otp register ", res);
+      if (res.status) {
+        navigate(`${authRedirectUrl}auth/otp`, {
+          replace: true,
+          state: { formData: formData, otpFor: "Register" },
+        });
+      }
+    });
   };
 
   return (
@@ -69,29 +100,58 @@ const RegisterForm = (props) => {
           {message}
         </Alert>
       )}
-      <div
-        style={{
-          width: innerWidth > 500 ? 500 : innerWidth - 20,
-          height: "fit-content",
-          margin: "20px auto",
-          border: "1px solid black",
-          borderRadius: 10,
-          padding: 20,
-          backgroundColor: "white",
-        }}
-      >
-        <Form
-          onSubmit={(e) => {
-            e.preventDefault();
-            onSubmit();
+      <div style={{ width: "100%" }}>
+        <div
+          style={{
+            width: innerWidth > 500 ? 500 : innerWidth - 20,
+            margin: "50px auto",
+            border: `1px solid ${COLORS.secondaryTwo}`,
+            borderRadius: 10,
+            padding: 20,
+            backgroundColor: "white",
+            height: "100%",
           }}
         >
-          <div className={isBrowser && "login-formGroup-container"}>
+          <Form onSubmit={onSubmit}>
+            <Form.Group className="login-formGroup">
+              <p className="login-formLabel">Name</p>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: 10,
+                }}
+              >
+                <Form.Control
+                  type="text"
+                  placeholder={"Enter First Name"}
+                  value={formData.first_name}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      first_name: e.target.value,
+                    })
+                  }
+                />
+                <Form.Control
+                  type="last_name"
+                  placeholder={"Enter Last Name"}
+                  value={formData.last_name}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      last_name: e.target.value,
+                    })
+                  }
+                />
+              </div>
+            </Form.Group>
+
             <Form.Group className="login-formGroup">
               <p className="login-formLabel">E mail</p>
               <Form.Control
                 type="email"
-                placeholder={"Enter Registered Email Address"}
+                placeholder={"Enter Email Address"}
                 value={formData.email}
                 onChange={(e) =>
                   setFormData({
@@ -101,44 +161,46 @@ const RegisterForm = (props) => {
                 }
               />
             </Form.Group>
-            <Form.Group className="login-formGroup">
-              <p className="login-formLabel">Password</p>
-              <Form.Control
-                type="password"
-                placeholder={"Enter Registered Email Address"}
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    email: e.target.value,
-                  })
-                }
-              />
-            </Form.Group>
-          </div>
+            <PasswordInput
+              label="Password"
+              password={formData.password}
+              onChangePassword={onChangePassword}
+              isShowPasswordIcon={false}
+            />
+            <PasswordInput
+              label="Confirm Password"
+              password={formData.password2}
+              onChangePassword={onChangePassword2}
+            />
 
-          {/* <FormButton label={"Log In"} />
+            <FormButton label={"Register"} />
 
-          <div
-            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}
-          >
-            <button
-              className="button-outline"
-              style={{ width: "100%", height: 50 }}
-              onClick={navigateToPhone}
+            <p style={{ borderTop: `1px solid ${COLORS.secondaryTwo}` }}></p>
+            <p
+              style={{
+                textAlign: "center",
+                color: COLORS.blue,
+                cursor: "pointer",
+              }}
             >
-              Change Email
-            </button>
-
-            <button
-              className="button-outline"
-              style={{ width: "100%", height: 50 }}
-              onClick={resendOTP}
-            >
-              Resend Verification Code
-            </button>
-          </div> */}
-        </Form>
+              Registered User ?{" "}
+              <span
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  color: COLORS.primary,
+                }}
+                onClick={() => {
+                  navigate(`${authRedirectUrl}auth/login`, {
+                    replace: true,
+                  });
+                }}
+              >
+                Log In
+              </span>
+            </p>
+          </Form>
+        </div>
       </div>
     </>
   );

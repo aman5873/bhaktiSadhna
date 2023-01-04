@@ -3,13 +3,13 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 import RegisterForm from "components/AuthForm/RegisterForm";
 import LogInForm from "components/AuthForm/LogInForm";
-// import SignUpForm from "components/AuthForm/SignUpForm";
+import ForgotPasswordForm from "components/AuthForm/ForgotPasswordForm";
+import ResetSavePasswordForm from "components/AuthForm/ResetSavePasswordForm";
 import LogOutComp from "components/AuthForm/LogOutComp";
+import OtpForm from "components/AuthForm/OtpForm";
 
 function AuthRoute(props) {
   const { isAuthenticated, authRedirectUrl } = props;
-  const { state = {} } = useLocation();
-  const phoneNumber = state?.phoneNumber;
 
   if (isAuthenticated) {
     return (
@@ -30,21 +30,32 @@ function AuthRoute(props) {
     return (
       <Routes>
         <Route
-          key="login"
+          // key="login"
           path="/login"
           element={<LogInForm authRedirectUrl={authRedirectUrl} />}
         />
-        {phoneNumber && (
-          <>
-            <Route
-              key="register"
-              path="/register"
-              element={<RegisterForm authRedirectUrl={authRedirectUrl} />}
-            />
-          </>
-        )}
         <Route
-          path="*"
+          // key="register"
+          path="/register"
+          element={<RegisterForm authRedirectUrl={authRedirectUrl} />}
+        />
+        <Route
+          // key="forgotPassword"
+          path="/forgotPassword"
+          element={<ForgotPasswordForm authRedirectUrl={authRedirectUrl} />}
+        />
+        <Route
+          // key="forgotPassword"
+          path="/resetPassword"
+          element={<ResetSavePasswordForm authRedirectUrl={authRedirectUrl} />}
+        />
+        <Route
+          // key="forgotPassword"
+          path="/otp"
+          element={<OtpForm authRedirectUrl={authRedirectUrl} />}
+        />
+        <Route
+          path="/*"
           exact={true}
           element={<Navigate replace to="login" />}
         />
