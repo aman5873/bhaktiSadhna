@@ -2,22 +2,18 @@ import axios from "axios";
 
 import * as config from "config";
 
-axios.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    if (
-      error.response.status === 401 ||
-      error.response.status === 403 ||
-      error.response.status === 400
-    ) {
-      saveAuthorizationToken(null);
-      saveRefreshToken(null);
-    }
-    return error;
-  }
-);
+// axios.interceptors.response.use(
+//   (response) => {
+//     return response;
+//   },
+//   (error) => {
+//     if (error.response.status === 401 || error.response.status === 403) {
+//       saveAuthorizationToken(null);
+//       saveRefreshToken(null);
+//     }
+//     return error;
+//   }
+// );
 
 export function setAuthorizationToken(token) {
   if (token) {
@@ -54,25 +50,22 @@ export function saveRefreshToken(refresh_token) {
 
 export async function validateAuthToken(token) {
   const data = { refresh: token };
-  const api_url = `${config.host}/login/refresh/`;
-  // return axios.get(api_url).then((res) => {
-  //   return res.data;
-  // });
-  return { status: true };
+  const api_url = `${config.host}/login_refresh/`;
+  return axios.post(api_url, data).then((res) => {
+    return res.data;
+  });
 }
 export async function isValidAuthToken(authToken) {
   if (authToken) {
     return validateAuthToken(authToken).then((res) => {
-      if (res.status) {
-        if (res.data.access_token && res.data.refresh_token) {
-          setAuthorizationToken(res.data.access_token);
-          setRefreshToken(res.data.refresh_token);
-          return true;
-        } else {
-          saveAuthorizationToken(null);
-          setRefreshToken(null);
-          return false;
-        }
+      console.log(res);
+      if (res.access) {
+        setAuthorizationToken(res.access);
+        return true;
+      } else {
+        saveAuthorizationToken(null);
+        setRefreshToken(null);
+        return false;
       }
     });
   } else {
@@ -144,8 +137,8 @@ export async function logIn(data) {
   const api_url = `${config.host}/login/`;
 
   return axios.post(api_url, data).then((res) => {
-    console.log("login ", res);
     if (res.data.status) {
+      console.log("login ", res);
       saveAuthorizationToken(res.data.access_token);
       saveRefreshToken(res.data.refresh_token);
     }
@@ -155,13 +148,19 @@ export async function logIn(data) {
 
 export async function logOutFunc() {
   const api_url = `${config.host}/logout/`;
-  axios
-    .get(api_url)
-    .then((res) => {
-      saveAuthorizationToken(res.data.token);
-    })
-    .catch((error) => {
-      console.warn(error);
-      saveAuthorizationToken(null);
-    });
+  return checkIsAuthenticated().then((res) => {
+    console.log("res refresh in logout.....");
+    if (res) {
+      axios
+        .post(api_url)
+        .then((res) => {
+          console.log(" logout.....");
+          saveAuthorizationToken(null);
+        })
+        .catch((error) => {
+          console.warn(error);
+          saveAuthorizationToken(null);
+        });
+    }
+  });
 }

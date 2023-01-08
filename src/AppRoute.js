@@ -50,6 +50,7 @@ function AppRoute() {
     // window.addEventListener("tokenChange", onTokenChange);
   }, []);
 
+  console.log("isAuthenticated ", isAuthenticated);
   return (
     <>
       <Router>
