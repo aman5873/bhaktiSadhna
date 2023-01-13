@@ -39,8 +39,10 @@ function LogInForm(props) {
           setEmailError("Not a registered user");
           return;
         }
-        if (res.status) {
-          console.log(res.message);
+        // if (res) {
+        //   window.location.reload(false);
+        // }
+        if (res) {
           navigate(`${authRedirectUrl}`, {
             replace: true,
           });

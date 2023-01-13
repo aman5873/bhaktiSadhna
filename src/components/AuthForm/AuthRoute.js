@@ -11,6 +11,8 @@ import OtpForm from "components/AuthForm/OtpForm";
 function AuthRoute(props) {
   const { isAuthenticated, authRedirectUrl } = props;
 
+  // console.log("path authRoute ", useLocation().pathname);
+
   if (isAuthenticated) {
     return (
       <Routes>

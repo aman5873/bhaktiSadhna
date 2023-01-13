@@ -4,6 +4,7 @@ import {
   Route,
   Navigate,
   BrowserRouter as Router,
+  useLocation,
 } from "react-router-dom";
 
 import AuthRoute from "./components/AuthForm/AuthRoute";
@@ -17,15 +18,18 @@ import HomeRoutes from "components/Home/HomeRoutes";
 const { innerHeight } = window;
 
 function HomeRoute(props) {
-  const {} = props;
+  const { isAuthenticated } = props;
+  const [isExpanded, setExpendState] = useState(false);
+
+  // console.log("path homeRoute ", useLocation().pathname);
   return (
     <div style={{ display: "flex", height: innerHeight }}>
-      <SideNavBar />
+      <SideNavBar isExpanded={isExpanded} setExpendState={setExpendState} />
       <div style={{ marginLeft: 55 }}>
         <Routes>
           <Route path={"home/*"} element={<HomeRoutes />} />
           <Route path={"admin/*"} element={<AdminRoutes />} />
-          <Route path="/*" element={<Navigate to="home/" replace />} />
+          <Route path="*" element={<Navigate to="home/" replace />} />
         </Routes>
       </div>
     </div>
@@ -33,24 +37,23 @@ function HomeRoute(props) {
 }
 
 function AppRoute() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(undefined);
+
   const onTokenChange = () => {
     checkIsAuthenticated().then((res) => {
       setIsAuthenticated(res);
     });
   };
 
-  document.addEventListener("wheel", (event) => {
-    if (document.activeElement.type === "number") {
-      document.activeElement.blur();
-    }
-  });
   useEffect(() => {
-    onTokenChange();
-    // window.addEventListener("tokenChange", onTokenChange);
+    if (isAuthenticated === undefined) {
+      onTokenChange();
+      window.addEventListener("tokenChange", onTokenChange);
+    }
   }, []);
 
   console.log("isAuthenticated ", isAuthenticated);
+
   return (
     <>
       <Router>
@@ -69,7 +72,7 @@ function AppRoute() {
               path="*"
               element={
                 isAuthenticated ? (
-                  <HomeRoute />
+                  <HomeRoute isAuthenticated={isAuthenticated} />
                 ) : (
                   <Navigate to="/auth/" replace />
                 )

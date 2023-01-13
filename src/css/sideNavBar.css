@@ -26,6 +26,7 @@
 .nav-brand {
   display: flex;
   color: var(--light);
+  align-items: center;
 }
 .nav-brand img {
   width: 40px;

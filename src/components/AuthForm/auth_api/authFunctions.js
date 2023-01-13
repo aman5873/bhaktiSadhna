@@ -29,14 +29,14 @@ export function saveAuthorizationToken(token) {
     localStorage.removeItem("token");
   }
   setAuthorizationToken(token);
-  // window.dispatchEvent(new Event("tokenChange"));
+  window.dispatchEvent(new Event("tokenChange"));
 }
 
 export function setRefreshToken(token) {
   if (token) {
-    axios.defaults.headers.common["Authorization"] = `token ${token}`;
+    axios.defaults.headers.common["refresh_token"] = `token ${token}`;
   } else {
-    delete axios.defaults.headers.common["Authorization"];
+    delete axios.defaults.headers.common["refresh_token"];
   }
 }
 export function saveRefreshToken(refresh_token) {
@@ -58,13 +58,12 @@ export async function validateAuthToken(token) {
 export async function isValidAuthToken(authToken) {
   if (authToken) {
     return validateAuthToken(authToken).then((res) => {
-      console.log(res);
       if (res.access) {
         setAuthorizationToken(res.access);
         return true;
       } else {
         saveAuthorizationToken(null);
-        setRefreshToken(null);
+        saveRefreshToken(null);
         return false;
       }
     });
@@ -77,23 +76,11 @@ export async function checkIsAuthenticated() {
   return isValidAuthToken(authToken);
 }
 
-// export async function sendOTP(phoneNumber, authRedirectUrl) {
-//   let api_url =
-//     authRedirectUrl && authRedirectUrl === "/admin/"
-//       ? `${config.host}/accounts/send_otp/${phoneNumber}/?a=true`
-//       : `${config.host}/accounts/send_otp/${phoneNumber}/`;
-
-//   return axios.get(api_url).then((res) => {
-//     return res.data;
-//   });
-// }
-
 export async function sendRegistrationOtp(data) {
   const api_url = `${config.host}/register/`;
 
-  console.log("send reg otp before sendRegistrationOtp ");
+  localStorage.removeItem("token");
   return axios.post(api_url, data).then((res) => {
-    console.log("send reg otp res ", res);
     if (res.data.status) {
       saveAuthorizationToken(res.data.token);
     }
@@ -104,7 +91,6 @@ export async function validateRegistrationOtp(otp) {
   const data = { otp: otp };
   const api_url = `${config.host}/registration_otp/`;
   return axios.post(api_url, data).then((res) => {
-    console.log("validate reg otp res ", res);
     if (res.status) {
       saveAuthorizationToken(res.data.access_token);
       saveRefreshToken(res.data.refresh_token);
@@ -137,30 +123,57 @@ export async function logIn(data) {
   const api_url = `${config.host}/login/`;
 
   return axios.post(api_url, data).then((res) => {
+    console.log("login response ......", res);
     if (res.data.status) {
-      console.log("login ", res);
       saveAuthorizationToken(res.data.access_token);
       saveRefreshToken(res.data.refresh_token);
+      return true;
     }
-    return res.data;
+    return false;
   });
 }
 
 export async function logOutFunc() {
+  // console.log("logout .......... ");
+  // saveAuthorizationToken(null);
+  // saveRefreshToken(null);
+
   const api_url = `${config.host}/logout/`;
-  return checkIsAuthenticated().then((res) => {
-    console.log("res refresh in logout.....");
-    if (res) {
-      axios
-        .post(api_url)
-        .then((res) => {
-          console.log(" logout.....");
+  const refresh = localStorage.getItem("refresh_token");
+  const data = { refresh_token: refresh };
+
+  let isRefreshed = false;
+  if (refresh) {
+    isRefreshed = validateAuthToken(refresh).then((res) => {
+      if (res.access) {
+        saveAuthorizationToken(res.access);
+        return true;
+      } else {
+        saveAuthorizationToken(null);
+        saveRefreshToken(null);
+        return false;
+      }
+    });
+  }
+  console.log("isRefreshed ", isRefreshed);
+
+  if (isRefreshed) {
+    axios
+      .post(api_url, data)
+      .then((res) => {
+        console.log(" logout..... api res", res);
+        if (res.data.status) {
           saveAuthorizationToken(null);
-        })
-        .catch((error) => {
-          console.warn(error);
-          saveAuthorizationToken(null);
-        });
-    }
-  });
+          saveRefreshToken(null);
+          return true;
+        } else {
+          return false;
+        }
+      })
+      .catch((error) => {
+        console.warn(error);
+        saveAuthorizationToken(null);
+        saveRefreshToken(null);
+      });
+  }
 }

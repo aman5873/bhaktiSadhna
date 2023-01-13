@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 
+import { useNavigate } from "react-router-dom";
+
 import { RiLogoutBoxLine } from "react-icons/ri";
 import { FaUserCircle } from "react-icons/fa";
 import { MdOutlineExpandLess, MdOutlineExpandMore } from "react-icons/md";
 // import Collapse from "react-bootstrap/Collapse";
 
-import { useNavigate } from "react-router-dom";
 import { FONTS, COLORS } from "constants/theme";
 import "css/sideNavBar.css";
 
@@ -13,76 +14,59 @@ const { innerHeight } = window;
 const menuItems = [
   {
     title: "Home",
-    icon: "/icons/grid.svg",
+    //icon: "/icons/grid.svg",
     path: "/",
-    subItems: [
-      {
-        title: "Setting 01",
-        icon: "/icons/settings.svg",
-        path: "/home/jhgkl/",
-      },
-      {
-        title: "Setting 02",
-        icon: "/icons/settings.svg",
-        path: "/home/jhgkljsbxjksb/",
-      },
-      {
-        title: "Setting 03",
-        icon: "/icons/settings.svg",
-        path: "/home/qwerty/",
-      },
-    ],
   },
   {
     title: "Admin Profile",
-    icon: "/icons/user.svg",
+    //icon: "/icons/user.svg",
     path: "/admin/",
   },
   {
     title: "Member",
-    icon: "/icons/message.svg",
+    //icon: "/icons/message.svg",
     path: "/home",
   },
 
   {
     title: "Settings",
-    icon: "/icons/settings.svg",
+    //icon: "/icons/settings.svg",
   },
   {
     text: "Messages",
-    icon: "/icons/message.svg",
+    //icon: "/icons/message.svg",
   },
   {
     text: "Analytics",
-    icon: "/icons/pie-chart.svg",
+    //icon: "/icons/pie-chart.svg",
   },
   {
     text: "File Manager",
-    icon: "/icons/folder.svg",
+    //icon: "/icons/folder.svg",
   },
   {
     text: "Orders",
-    icon: "/icons/shopping-cart.svg",
+    //icon: "/icons/shopping-cart.svg",
   },
   {
     text: "Saved Items",
-    icon: "/icons/heart.svg",
+    //icon: "/icons/heart.svg",
   },
   {
     text: "Analytics 1",
-    icon: "/icons/pie-chart.svg",
+    //icon: "/icons/pie-chart.svg",
   },
   {
     text: "File Manager 1",
-    icon: "/icons/folder.svg",
+    //icon: "/icons/folder.svg",
   },
   {
     text: "Orders 1",
-    icon: "/icons/shopping-cart.svg",
+    //icon: "/icons/shopping-cart.svg",
   },
   {
     text: "Saved Items 1",
-    icon: "/icons/heart.svg",
+    //icon: "/icons/heart.svg",
   },
 ];
 
@@ -95,13 +79,15 @@ function MenuItem(props) {
       <div
         key={itemObj.title}
         className={isExpanded ? "menu-item" : "menu-item menu-item-NX"}
-        style={{ marginBottom: 0 }}
+        style={{ marginBottom: 0, marginLeft: !isExpanded && "-60px" }}
         onClick={() => {
           itemObj.subItems && setIsCollapsed(!isCollapsed);
           onNavigate(itemObj.path);
         }}
       >
-        <img className="menu-item-icon" src={itemObj.icon} alt="" />
+        {itemObj.icon && (
+          <img className="menu-item-icon" src={itemObj.icon} alt="" />
+        )}
         {isExpanded && (
           <div className="menu-item-title">
             {itemObj.title}
@@ -139,9 +125,9 @@ function MenuSubItems(props) {
             transitionDelay: "250ms",
           }}
         >
-          {subItems.map((subItemObj) => (
+          {subItems.map((subItemObj, index) => (
             <div
-              key={subItemObj.title}
+              key={`${subItemObj.title}+${index}`}
               className={"menu-sub-item"}
               style={{ marginBottom: 0 }}
               onClick={() => onNavigate(subItemObj.path)}
@@ -155,9 +141,7 @@ function MenuSubItems(props) {
     </>
   );
 }
-const SideNavBar = () => {
-  const [isExpanded, setExpendState] = useState(false);
-
+const SideNavBar = (isExpanded, setExpendState) => {
   let menuRef = useRef();
   const navigate = useNavigate();
   function onNavigate(url) {
@@ -194,7 +178,11 @@ const SideNavBar = () => {
             ? "side-nav-container"
             : "side-nav-container side-nav-container-NX"
         }
-        style={{ position: "absolute", height: innerHeight }}
+        style={{
+          position: "absolute",
+          height: innerHeight,
+          overflow: "hidden",
+        }}
       >
         <div className="nav-upper">
           <div className="nav-heading">
@@ -203,9 +191,9 @@ const SideNavBar = () => {
                 <img
                   src="/logo.png"
                   alt=""
-                  style={{ width: 30, height: 30, alignSelf: "center" }}
+                  style={{ width: 60, height: 40, alignSelf: "center" }}
                 />
-                <p style={{ ...FONTS.H2, color: "white" }}>Bhakti Sadhna</p>
+                <p style={{ ...FONTS.H2, color: "white" }}>Abc Qwerty</p>
               </div>
             )}
             <div
@@ -238,13 +226,12 @@ const SideNavBar = () => {
             style={{
               overflowY: "scroll",
               height: innerHeight - 170,
-              background: "yellow",
             }}
           >
-            {menuItems.map((itemObj) => {
+            {menuItems.map((itemObj, index) => {
               return (
                 <MenuItem
-                  key={itemObj.title}
+                  key={`${itemObj.title}+${index}`}
                   isExpanded={isExpanded}
                   itemObj={itemObj}
                   onNavigate={onNavigate}
@@ -253,19 +240,41 @@ const SideNavBar = () => {
             })}
           </div>
         </div>
-        <div className="nav-footer">
+        <div
+          className="nav-footer"
+          style={{
+            justifyContent: !isExpanded && "center",
+            alignItems: !isExpanded && "center",
+          }}
+        >
           {isExpanded && (
-            <div className="nav-details">
+            <div className="nav-details" style={{ alignItems: "center" }}>
               <FaUserCircle style={{ width: 45, height: 45 }} />
               <div className="nav-footer-info">
                 <p className="nav-footer-user-name">Welcome, </p>
                 <p className="nav-footer-user-name">Aman Singh </p>
-                <p className="nav-footer-user-position">Log Out</p>
+                <p
+                  className="nav-footer-user-position"
+                  onClick={() =>
+                    navigate("/auth/logout/", {
+                      replace: true,
+                    })
+                  }
+                >
+                  Log Out
+                </p>
               </div>
             </div>
           )}
 
-          <RiLogoutBoxLine style={{ width: 40, height: 40 }} />
+          <RiLogoutBoxLine
+            style={{ width: 40, height: 40 }}
+            onClick={() =>
+              navigate("/auth/logout/", {
+                replace: true,
+              })
+            }
+          />
         </div>
       </div>
     </>
