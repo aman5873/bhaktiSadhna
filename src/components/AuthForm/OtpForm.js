@@ -36,11 +36,12 @@ export function MaskEmail(email) {
   masked_email = masked_email + postfix;
   return masked_email;
 }
-function OtpForm(props) {
-  const { authRedirectUrl } = props;
+function OtpForm() {
   const { state = {} } = useLocation();
   const { formData, otpFor } = state;
 
+  console.log(state)
+  console.log(otpFor)
   const userMail = MaskEmail(otpFor === "Register" ? formData.email : formData);
 
   const navigate = useNavigate();
@@ -51,8 +52,8 @@ function OtpForm(props) {
   const navigateToChangeEmail = () => {
     const path =
       otpFor === "Register"
-        ? `${authRedirectUrl}auth/register`
-        : `${authRedirectUrl}auth/forgotPassword`;
+        ? `auth/register`
+        : `auth/forgotPassword`;
     navigate(path, {
       replace: true,
     });
@@ -71,10 +72,12 @@ function OtpForm(props) {
 
   const onSubmit = () => {
     if (otp.length === 6) {
+      console.log('it is working', otpFor)
       otpFor === "Register"
         ? validateRegistrationOtp(otp).then((res) => {
+          console.log(res)
             if (res.status) {
-              navigate(authRedirectUrl, { replace: true });
+              navigate('/home/', { replace: true });
             } else {
               setOtpError(true);
               setMessage(res.message);
@@ -82,7 +85,7 @@ function OtpForm(props) {
           })
         : validateForgotPasswordOtp(otp).then((res) => {
             if (res.status) {
-              navigate(`${authRedirectUrl}auth/resetPassword`, {
+              navigate(`auth/resetPassword`, {
                 replace: true,
                 state: { userEmail: formData.email },
               });

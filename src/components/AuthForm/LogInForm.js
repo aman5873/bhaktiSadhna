@@ -35,9 +35,9 @@ function LogInForm(props) {
     if (formData.email.length > 0) {
       console.log("logIn-form submitted ", formData);
       logIn(formData).then((res) => {
+        console.log('in login form',res)
         if (res === undefined) {
           setEmailError("Not a registered user");
-          return;
         }
         // if (res) {
         //   window.location.reload(false);

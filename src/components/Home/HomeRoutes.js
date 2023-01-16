@@ -7,7 +7,6 @@ function HomeRoutes() {
   return (
     <Routes>
       <Route path={"/*"} element={<MyApp />} />
-      {/* <Route path="/*" exact={true} element={<Navigate to="home/" />} /> */}
     </Routes>
   );
 }

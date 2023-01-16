@@ -7,6 +7,7 @@ import ForgotPasswordForm from "components/AuthForm/ForgotPasswordForm";
 import ResetSavePasswordForm from "components/AuthForm/ResetSavePasswordForm";
 import LogOutComp from "components/AuthForm/LogOutComp";
 import OtpForm from "components/AuthForm/OtpForm";
+import NotFound from "components/NotFound";
 
 function AuthRoute(props) {
   const { isAuthenticated, authRedirectUrl } = props;
@@ -19,7 +20,7 @@ function AuthRoute(props) {
         <Route
           key="logout"
           path="/logout"
-          element={<LogOutComp authRedirectUrl={authRedirectUrl} />}
+          element={<LogOutComp />}
         />
         <Route
           path="*"
@@ -34,7 +35,7 @@ function AuthRoute(props) {
         <Route
           // key="login"
           path="/login"
-          element={<LogInForm authRedirectUrl={authRedirectUrl} />}
+          element={<LogInForm authRedirectUrl={"/home"} />}
         />
         <Route
           // key="register"
@@ -57,9 +58,12 @@ function AuthRoute(props) {
           element={<OtpForm authRedirectUrl={authRedirectUrl} />}
         />
         <Route
+          path="/logout"
+          element={<LogOutComp />}
+        />
+        <Route
           path="/*"
-          exact={true}
-          element={<Navigate replace to="login" />}
+          element={<NotFound />}
         />
       </Routes>
     );

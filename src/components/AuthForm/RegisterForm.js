@@ -81,7 +81,7 @@ const RegisterForm = (props) => {
     sendRegistrationOtp(formData).then((res) => {
       console.log("after send otp register ", res);
       if (res.status) {
-        navigate(`${authRedirectUrl}auth/otp`, {
+        navigate(`/auth/otp`, {
           replace: true,
           state: { formData: formData, otpFor: "Register" },
         });

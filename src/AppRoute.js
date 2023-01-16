@@ -14,22 +14,27 @@ import SideNavBar from "components/SideNavBar";
 
 import AdminRoutes from "components/Admin/AdminRoutes";
 import HomeRoutes from "components/Home/HomeRoutes";
+import NotFound from "components/NotFound";
 
 const { innerHeight } = window;
 
-function HomeRoute(props) {
-  const { isAuthenticated } = props;
+function HomeRoute() {
+  const [isAuthenticated, setIsAuthenticated]  = useState(false);
   const [isExpanded, setExpendState] = useState(false);
 
+  if(localStorage.getItem(isAuthenticated) === 'true'){
+    setIsAuthenticated(true);
+  }
   // console.log("path homeRoute ", useLocation().pathname);
   return (
     <div style={{ display: "flex", height: innerHeight }}>
-      <SideNavBar isExpanded={isExpanded} setExpendState={setExpendState} />
+      {/* <SideNavBar isExpanded={isExpanded} setExpendState={setExpendState} /> */}
       <div style={{ marginLeft: 55 }}>
         <Routes>
+          <Route path={"auth/*"} element={<AuthRoute />} />
           <Route path={"home/*"} element={<HomeRoutes />} />
           <Route path={"admin/*"} element={<AdminRoutes />} />
-          <Route path="*" element={<Navigate to="home/" replace />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
     </div>
@@ -39,25 +44,25 @@ function HomeRoute(props) {
 function AppRoute() {
   const [isAuthenticated, setIsAuthenticated] = useState(undefined);
 
-  const onTokenChange = () => {
-    checkIsAuthenticated().then((res) => {
-      setIsAuthenticated(res);
-    });
-  };
+  // const onTokenChange = () => {
+  //   console.log("Are we here")
+  //   checkIsAuthenticated().then((res) => {
+  //     setIsAuthenticated(res);
+  //   });
+  // };
 
-  useEffect(() => {
-    if (isAuthenticated === undefined) {
-      onTokenChange();
-      window.addEventListener("tokenChange", onTokenChange);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (isAuthenticated === undefined) {
+  //     onTokenChange();
+  //     window.addEventListener("tokenChange", onTokenChange);
+  //   }
+  // }, []);
 
-  console.log("isAuthenticated ", isAuthenticated);
 
   return (
     <>
       <Router>
-        {isAuthenticated !== undefined && (
+        {/* {isAuthenticated !== undefined && (
           <Routes>
             <Route
               path="auth/*"
@@ -80,7 +85,8 @@ function AppRoute() {
             />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-        )}
+        )} */}
+      <HomeRoute />
       </Router>
     </>
   );
