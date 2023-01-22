@@ -77,9 +77,8 @@ const RegisterForm = (props) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log("register-form submitted ", formData);
+
     sendRegistrationOtp(formData).then((res) => {
-      console.log("after send otp register ", res);
       if (res.status) {
         navigate(`/auth/otp`, {
           replace: true,

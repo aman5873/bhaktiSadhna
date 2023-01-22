@@ -47,15 +47,13 @@ function Attendance() {
     };
     markTodayAttendance(data).then((res) => {
       if (res.status) {
-        setAttendanceObj(res.data);
+        getAttendanceData(date);
       }
     });
   }
   useEffect(() => {
     getAttendanceData(date);
   }, [date]);
-
-  console.log(attendanceObj);
 
   return (
     <div className="attendance-container">

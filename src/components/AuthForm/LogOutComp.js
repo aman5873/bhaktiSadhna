@@ -1,23 +1,11 @@
-import React, { useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
+import React from "react";
 
 import { logOutFunc } from "components/AuthForm/auth_api/authFunctions";
 import ActivityLoader from "components/ActivityLoader";
 
-function LogOutComp(props) {
-  // const { authRedirectUrl } = props;
-  // const navigate = useNavigate();
+function LogOutComp() {
   logOutFunc();
-  // useEffect(() => {
-  //   logOutFunc().then((res) => {
-  //     if (res) {
-  //       console.log("logout res here.....", res);
-  //       navigate(`${authRedirectUrl}`, {
-  //         replace: true,
-  //       });
-  //     }
-  //   });
-  // }, []);
+
   return <ActivityLoader isRefreshing={true} />;
 }
 

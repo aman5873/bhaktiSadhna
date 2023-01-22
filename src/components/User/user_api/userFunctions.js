@@ -29,9 +29,9 @@ export async function markTodayAttendance(data) {
   const refresh = localStorage.getItem("refresh_token");
 
   if (refresh) {
-    refreshAuthToken(refresh).then((res) => {
+    return refreshAuthToken(refresh).then((res) => {
       if (res.data.status) {
-        axios
+        return axios
           .post(api_url, data, {
             headers: {
               Authorization: `Token ${res.data.data.access}`,
@@ -39,8 +39,7 @@ export async function markTodayAttendance(data) {
           })
           .then((res) => {
             if (res) {
-              console.log("Here ........", res);
-              return res;
+              return res.data;
             }
           })
           .catch((error) => {

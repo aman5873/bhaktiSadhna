@@ -33,7 +33,6 @@ function LogInForm(props) {
   const onSubmit = (e) => {
     e.preventDefault();
     if (formData.email.length > 0) {
-      console.log("logIn-form submitted ", formData);
       logIn(formData).then((res) => {
         if (res === undefined) {
           setEmailError("Not a registered user");

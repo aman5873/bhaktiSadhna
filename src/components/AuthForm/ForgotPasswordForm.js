@@ -23,19 +23,19 @@ function VerifySelectEmailForm(props) {
     e.preventDefault();
     setAlertMessage(null);
     if (email.length > 0) {
-      sendForgotPasswordOtp(email).then((res) => {
-        console.log("after send otp forget-password ", res);
-        if (res.status) {
-          navigate(`${authRedirectUrl}auth/otp`, {
-            replace: true,
-            state: { formData: { email: email }, otpFor: "Reset Password" },
-          });
-        } else {
-          res.message
-            ? setAlertMessage(res.message)
-            : setAlertMessage("Internal Server Error!");
-        }
-      });
+      // sendForgotPasswordOtp(email).then((res) => {
+      //   console.log("after send otp forget-password ", res);
+      //   if (res.status) {
+      //     navigate(`${authRedirectUrl}auth/otp`, {
+      //       replace: true,
+      //       state: { formData: { email: email }, otpFor: "Reset Password" },
+      //     });
+      //   } else {
+      //     res.message
+      //       ? setAlertMessage(res.message)
+      //       : setAlertMessage("Internal Server Error!");
+      //   }
+      // });
     }
   };
 

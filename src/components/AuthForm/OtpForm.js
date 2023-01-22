@@ -40,8 +40,6 @@ function OtpForm() {
   const { state = {} } = useLocation();
   const { formData, otpFor } = state;
 
-  console.log(state)
-  console.log(otpFor)
   const userMail = MaskEmail(otpFor === "Register" ? formData.email : formData);
 
   const navigate = useNavigate();
@@ -51,9 +49,7 @@ function OtpForm() {
 
   const navigateToChangeEmail = () => {
     const path =
-      otpFor === "Register"
-        ? `auth/register`
-        : `auth/forgotPassword`;
+      otpFor === "Register" ? `auth/register` : `auth/forgotPassword`;
     navigate(path, {
       replace: true,
     });
@@ -72,12 +68,10 @@ function OtpForm() {
 
   const onSubmit = () => {
     if (otp.length === 6) {
-      console.log('it is working', otpFor)
       otpFor === "Register"
         ? validateRegistrationOtp(otp).then((res) => {
-          console.log(res)
             if (res.status) {
-              navigate('/home/', { replace: true });
+              navigate("/home/", { replace: true });
             } else {
               setOtpError(true);
               setMessage(res.message);
@@ -99,8 +93,6 @@ function OtpForm() {
     }
   };
 
-  // console.log(otpError);
-  // console.log(message);
   return (
     <div style={{ width: "100%" }}>
       {message && (

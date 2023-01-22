@@ -93,7 +93,6 @@ export async function logIn(data) {
   const api_url = `${config.host}/login/`;
 
   return axios.post(api_url, data).then((res) => {
-    console.log("login response ......", res);
     if (res.data.status) {
       saveAuthorizationToken(res.data.access_token);
       saveRefreshToken(res.data.refresh_token);
@@ -105,10 +104,6 @@ export async function logIn(data) {
 }
 
 export async function logOutFunc() {
-  // saveAuthorizationToken(null);
-  // saveRefreshToken(null);
-
-  console.log("logging out................");
   const api_url = `${config.host}/logout/`;
   const refresh = localStorage.getItem("refresh_token");
   const data = { refresh_token: refresh };
@@ -116,10 +111,6 @@ export async function logOutFunc() {
   if (refresh) {
     refreshAuthToken(refresh).then((res) => {
       if (res.data.status) {
-        saveAuthorizationToken(res.data.data.access);
-        let headers = {
-          Authorization: `token ${res.data.data.access}`,
-        };
         axios
           .post(api_url, data, {
             headers: {
