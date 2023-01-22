@@ -18,55 +18,14 @@ const menuItems = [
     path: "/",
   },
   {
-    title: "Admin Profile",
+    title: "Attendance",
     //icon: "/icons/user.svg",
-    path: "/admin/",
+    path: "/user/attendance",
   },
   {
     title: "Member",
     //icon: "/icons/message.svg",
     path: "/home",
-  },
-
-  {
-    title: "Settings",
-    //icon: "/icons/settings.svg",
-  },
-  {
-    text: "Messages",
-    //icon: "/icons/message.svg",
-  },
-  {
-    text: "Analytics",
-    //icon: "/icons/pie-chart.svg",
-  },
-  {
-    text: "File Manager",
-    //icon: "/icons/folder.svg",
-  },
-  {
-    text: "Orders",
-    //icon: "/icons/shopping-cart.svg",
-  },
-  {
-    text: "Saved Items",
-    //icon: "/icons/heart.svg",
-  },
-  {
-    text: "Analytics 1",
-    //icon: "/icons/pie-chart.svg",
-  },
-  {
-    text: "File Manager 1",
-    //icon: "/icons/folder.svg",
-  },
-  {
-    text: "Orders 1",
-    //icon: "/icons/shopping-cart.svg",
-  },
-  {
-    text: "Saved Items 1",
-    //icon: "/icons/heart.svg",
   },
 ];
 
@@ -141,17 +100,21 @@ function MenuSubItems(props) {
     </>
   );
 }
-const SideNavBar = (isExpanded, setExpendState) => {
+function SideNavBar(props) {
+  const { isExpanded, setExpanded } = props;
+
+  const [user, setUser] = useState("Aman Singh");
   let menuRef = useRef();
   const navigate = useNavigate();
   function onNavigate(url) {
     navigate(url);
+    setExpanded(false);
   }
 
   useEffect(() => {
     let handler = (e) => {
       if (!menuRef.current.contains(e.target)) {
-        setExpendState(false);
+        setExpanded(false);
       }
     };
     document.addEventListener("mousedown", handler);
@@ -163,7 +126,7 @@ const SideNavBar = (isExpanded, setExpendState) => {
     <>
       {/* <div
         style={{ position: "absolute", top: 5, right: 5, background: "blue" }}
-        // onClick={() => setExpendState(!isExpanded)}
+        onClick={() => setExpanded(!isExpanded)}
       >
         <button className="hamburger">
           <span></span>
@@ -197,7 +160,7 @@ const SideNavBar = (isExpanded, setExpendState) => {
               </div>
             )}
             <div
-              onClick={() => setExpendState(!isExpanded)}
+              onClick={() => setExpanded(!isExpanded)}
               style={{ display: "flex", width: 55, alignItems: "center" }}
             >
               {isExpanded ? (
@@ -251,10 +214,15 @@ const SideNavBar = (isExpanded, setExpendState) => {
             <div className="nav-details" style={{ alignItems: "center" }}>
               <FaUserCircle style={{ width: 45, height: 45 }} />
               <div className="nav-footer-info">
-                <p className="nav-footer-user-name">Welcome, </p>
-                <p className="nav-footer-user-name">Aman Singh </p>
+                {user && (
+                  <>
+                    <p className="nav-footer-user-name">Welcome, </p>
+                    <p className="nav-footer-user-name">Aman Singh </p>
+                  </>
+                )}
                 <p
                   className="nav-footer-user-position"
+                  style={{ margin: user === null && "auto" }}
                   onClick={() =>
                     navigate("/auth/logout/", {
                       replace: true,
@@ -279,6 +247,6 @@ const SideNavBar = (isExpanded, setExpendState) => {
       </div>
     </>
   );
-};
+}
 
 export default SideNavBar;

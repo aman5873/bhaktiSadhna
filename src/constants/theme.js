@@ -21,6 +21,7 @@ export const COLORS = {
   grayTwo: "#00000054",
   green: "#00ff00",
   greenTwo: "#1A4D2E",
+  greenThree: "#006838",
   black: "#000000",
 };
 export const BACKGROUND = "#F6F6F6";

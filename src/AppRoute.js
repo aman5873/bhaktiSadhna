@@ -14,27 +14,27 @@ import SideNavBar from "components/SideNavBar";
 
 import AdminRoutes from "components/Admin/AdminRoutes";
 import HomeRoutes from "components/Home/HomeRoutes";
-import NotFound from "components/NotFound";
+import UserRoutes from "components/User/UserRoutes";
 
 const { innerHeight } = window;
 
 function HomeRoute() {
-  const [isAuthenticated, setIsAuthenticated]  = useState(false);
-  const [isExpanded, setExpendState] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isExpanded, setExpanded] = useState(false);
 
-  if(localStorage.getItem(isAuthenticated) === 'true'){
+  if (localStorage.getItem(isAuthenticated) === "true") {
     setIsAuthenticated(true);
   }
-  // console.log("path homeRoute ", useLocation().pathname);
+
   return (
     <div style={{ display: "flex", height: innerHeight }}>
-      {/* <SideNavBar isExpanded={isExpanded} setExpendState={setExpendState} /> */}
-      <div style={{ marginLeft: 55 }}>
+      <SideNavBar isExpanded={isExpanded} setExpanded={setExpanded} />
+      <div style={{ marginLeft: 55, width: "-webkit-fill-available" }}>
         <Routes>
-          <Route path={"auth/*"} element={<AuthRoute />} />
           <Route path={"home/*"} element={<HomeRoutes />} />
           <Route path={"admin/*"} element={<AdminRoutes />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path={"user/*"} element={<UserRoutes />} />
+          <Route path="*" element={<Navigate to="home/" replace />} />
         </Routes>
       </div>
     </div>
@@ -44,25 +44,23 @@ function HomeRoute() {
 function AppRoute() {
   const [isAuthenticated, setIsAuthenticated] = useState(undefined);
 
-  // const onTokenChange = () => {
-  //   console.log("Are we here")
-  //   checkIsAuthenticated().then((res) => {
-  //     setIsAuthenticated(res);
-  //   });
-  // };
+  const onTokenChange = () => {
+    checkIsAuthenticated().then((res) => {
+      setIsAuthenticated(res);
+    });
+  };
 
-  // useEffect(() => {
-  //   if (isAuthenticated === undefined) {
-  //     onTokenChange();
-  //     window.addEventListener("tokenChange", onTokenChange);
-  //   }
-  // }, []);
-
+  useEffect(() => {
+    if (isAuthenticated === undefined) {
+      onTokenChange();
+      window.addEventListener("tokenChange", onTokenChange);
+    }
+  }, []);
 
   return (
     <>
       <Router>
-        {/* {isAuthenticated !== undefined && (
+        {isAuthenticated !== undefined && (
           <Routes>
             <Route
               path="auth/*"
@@ -83,10 +81,8 @@ function AppRoute() {
                 )
               }
             />
-            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-        )} */}
-      <HomeRoute />
+        )}
       </Router>
     </>
   );

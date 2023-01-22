@@ -88,7 +88,7 @@
 } */
 
 .menu-item {
-  height: 57px;
+  min-height: 45px;
   display: flex;
   color: var(--light);
   text-decoration: none;
@@ -132,6 +132,7 @@
   bottom: 0;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 .nav-footer-info {
   margin: 0px 7px;
